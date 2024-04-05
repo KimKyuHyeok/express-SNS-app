@@ -1,6 +1,7 @@
 const {Router} = require("express");
 const { isNotAuth } = require('../middleware/auth');
 const UserService = require('./user.service');
+const passport = require('passport');
 
 const userRouter = Router();
 

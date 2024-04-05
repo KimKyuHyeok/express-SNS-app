@@ -47,7 +47,7 @@ const UserService = {
     logout: (req, res, next) => {
         req.logOut();
         res.redirect('/user/login');
-    }
+    },
 }
 
 
