@@ -54,8 +54,6 @@ const googleStrategyConfig = new GoogleStrategy({
 
         const email = profile.emails[0].value;
         try {
-            console.log('GOOGLE ID >> ' + googleId);
-            console.log('EMAIL >> ' + email);
 
             await db.promise().query(userRepository.googleSignup, [googleId, email]);
 
