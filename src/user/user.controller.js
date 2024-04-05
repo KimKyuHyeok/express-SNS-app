@@ -1,18 +1,19 @@
 const {Router} = require("express");
+const { isNotAuth } = require('../middleware/auth');
 const UserService = require('./user.service');
 
 const userRouter = Router();
 
-userRouter.get('/login', (req, res) => {
+userRouter.get('/login',isNotAuth, (req, res) => {
     res.render('user/login');
 })
 
-userRouter.get('/signup', (req, res) => {
+userRouter.get('/signup',isNotAuth, (req, res) => {
     res.render('user/signup');
 })
 
 
-userRouter.post('/signup', UserService.signup);
-userRouter.post('/login', UserService.login);
+userRouter.post('/signup',isNotAuth, UserService.signup);
+userRouter.post('/login',isNotAuth, UserService.login);
 
 module.exports = userRouter;
