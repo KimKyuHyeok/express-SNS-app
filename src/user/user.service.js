@@ -42,6 +42,11 @@ const UserService = {
                 res.redirect('/');
             })
         })(req, res, next)
+    },
+
+    logout: (req, res, next) => {
+        req.logOut();
+        res.redirect('/user/login');
     }
 }
 
