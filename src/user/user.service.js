@@ -3,6 +3,7 @@ const db = require('../../db');
 const {signup, login} = require("./user.repository");
 const {encodePass} = require('../config/user.config');
 const passport = require('passport');
+const sendMail = require('../mail/mail');
 
 
 const UserService = {
@@ -19,6 +20,8 @@ const UserService = {
                     success: true,
                 })
             });
+
+            await sendMail('kyuhyeok@gmail.com', 'test', 'welcome');
 
 
             return res.status(200).json({
