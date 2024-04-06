@@ -3,6 +3,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const userRepository = require('../user/user.repository');
 const db = require('../../db');
 const GoogleStrategy = require('passport-google-oauth20');
+const KakaoStrategy = require('passport-kakao').Strategy;
 const {comparePass} = require('../config/user.config');
 const e = require("express");
 require('dotenv').config();
@@ -62,15 +63,47 @@ const googleStrategyConfig = new GoogleStrategy({
             console.log('google login INSERT error');
             return done(err);
         }
-
-
     } catch (err) {
         console.error('google login error');
         return done(err);
     }
+});
 
+const kakaoStrategyConfig = new KakaoStrategy({
+    clientID: process.env.KAKAO_CLIENTID,
+    callbackURL: '/auth/kakao/callback',
+}, async (accessToken, refreshToken, profileInfo, done) => {
+    try {
+        const kakaoId = profileInfo.id;
+        const user = await db.promise().query(userRepository.findByKakaoId, [kakaoId]);
+        const userInfo = user[0][0];
+
+        // 프로필 이미지
+        const profileImageUrl = profileInfo._json.kakao_account.profile.profile_image_url;
+
+
+
+        if (userInfo) return done(null, userInfo);
+
+        // email 정보를 가져오려면 승인이 필요해서 임시로 넣어놨음
+        const email = 'test';
+
+    try {
+
+            await db.promise().query(userRepository.kakaoSignup, [kakaoId, email]);
+
+            done(null, userInfo);
+        } catch (err) {
+            console.log('kakao login INSERT error');
+            return done(err);
+        }
+    } catch (err) {
+        console.error('kakao login error');
+        return done(err);
+    }
 });
 
 
 passport.use("local", localStrategyConfig);
-passport.use('google', googleStrategyConfig)
+passport.use('google', googleStrategyConfig);
+passport.use('kakao', kakaoStrategyConfig);
