@@ -9,4 +9,10 @@ auth.get('/google/callback', passport.authenticate('google', {
     failureRedirect: '/user/login',
 }))
 
+auth.get('/kakao', passport.authenticate('kakao'));
+auth.get('/kakao/callback', passport.authenticate('kakao', {
+    successReturnToOrRedirect: '/',
+    failureRedirect: '/user/login',
+}))
+
 module.exports = auth;
