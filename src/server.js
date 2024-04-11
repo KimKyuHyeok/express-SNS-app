@@ -26,13 +26,13 @@ app.use(passport.session());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
-app.use('/auth', userRouter);
 app.use('/', mainRouter);
+app.use('/auth', userRouter);
 app.use('/posts', postsRouter);
-app.use('/profile', profileRouter);
-app.use('/comments', commentsRouter);
+app.use('/posts/:id/comments', commentsRouter);
+app.use('/profile/:id', profileRouter);
 app.use('/friends', friendsRouter);
-app.use('/likes', likesRouter);
+app.use('/posts/:id/like', likesRouter);
 
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
