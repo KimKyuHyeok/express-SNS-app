@@ -1,9 +1,15 @@
 const express = require('express');
 const path = require("path");
 const app = express();
-const user = require('./user/index.js');
-const home = require('./index');
-const auth = require('./auth/index');
+
+const userRouter = require('./api/routes/users.router');
+const mainRouter = require('./api/routes/main.router');
+const postsRouter = require('./api/routes/posts.router');
+const profileRouter = require('./api/routes/profile.router');
+const commentsRouter = require('./api/routes/comments.router');
+const friendsRouter = require('./api/routes/friends.router');
+const likesRouter = require('./api/routes/likes.router');
+
 const passport = require('passport');
 const cookieSession = require('cookie-session');
 
@@ -21,9 +27,14 @@ app.use(passport.session());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
-app.use('/user', user);
-app.use('/', home);
-app.use('/auth', auth);
+app.use('/', mainRouter);
+app.use('/auth', userRouter);
+app.use('/posts', postsRouter);
+app.use('/posts/:id/comments', commentsRouter);
+app.use('/profile/:id', profileRouter);
+app.use('/friends', friendsRouter);
+app.use('/posts/:id/like', likesRouter);
+
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
 

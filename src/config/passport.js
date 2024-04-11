@@ -1,6 +1,6 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const userRepository = require('../user/user.repository');
+const userRepository = require('../service/user.repository');
 const db = require('../../db');
 const GoogleStrategy = require('passport-google-oauth20');
 const KakaoStrategy = require('passport-kakao').Strategy;
