@@ -1,13 +1,14 @@
 const express = require('express');
 const path = require("path");
 const app = express();
-const userRouter = require('./routes/users.router');
-const mainRouter = require('./routes/main.router');
-const postsRouter = require('./routes/posts.router');
-const profileRouter = require('./routes/profile.router');
-const commentsRouter = require('./routes/comments.router');
-const friendsRouter = require('./routes/friends.router');
-const likesRouter = require('./routes/likes.router');
+
+const userRouter = require('./api/routes/users.router');
+const mainRouter = require('./api/routes/main.router');
+const postsRouter = require('./api/routes/posts.router');
+const profileRouter = require('./api/routes/profile.router');
+const commentsRouter = require('./api/routes/comments.router');
+const friendsRouter = require('./api/routes/friends.router');
+const likesRouter = require('./api/routes/likes.router');
 
 const passport = require('passport');
 const cookieSession = require('cookie-session');

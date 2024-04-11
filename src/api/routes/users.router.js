@@ -1,11 +1,23 @@
 const {Router} = require("express");
 const passport = require('passport');
-
-const userController = require('../user/user.controller');
+const {isNotAuth} = require("../middleware/auth");
+const UserService = require("../../service/user.service");
 
 const userRouter = Router();
 
-userRouter.use(userController);
+userRouter.get('/login',isNotAuth, (req, res) => {
+    res.render('user/login');
+})
+
+userRouter.get('/signup',isNotAuth, (req, res) => {
+    res.render('user/signup');
+})
+
+
+userRouter.post('/signup',isNotAuth, UserService.signup);
+userRouter.post('/login',isNotAuth, UserService.login);
+userRouter.post('/logout', UserService.logout);
+
 userRouter.get('/google', passport.authenticate('google'));
 userRouter.get('/google/callback', passport.authenticate('google', {
     successReturnToOrRedirect: '/',

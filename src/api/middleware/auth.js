@@ -1,14 +1,13 @@
 function isAuth(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
-
     }
-    res.redirect('/user/login');
+    res.redirect('/auth/login');
 }
 
 function isNotAuth(req, res, next) {
     if (req.isAuthenticated()) {
-        return res.redirect('/');
+        return res.redirect('/posts');
     }
     return next();
 }
