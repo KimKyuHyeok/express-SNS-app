@@ -6,11 +6,11 @@ const UserService = require("../../service/user.service");
 const userRouter = Router();
 
 userRouter.get('/login',isNotAuth, (req, res) => {
-    res.render('user/login');
+    res.render('auth/login');
 })
 
 userRouter.get('/signup',isNotAuth, (req, res) => {
-    res.render('user/signup');
+    res.render('auth/signup');
 })
 
 
