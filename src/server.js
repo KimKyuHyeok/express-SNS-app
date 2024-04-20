@@ -35,7 +35,7 @@ app.use('/profile/:id', profileRouter);
 app.use('/friends', friendsRouter);
 app.use('/posts/:id/like', likesRouter);
 
-app.use('/static', express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 
 
