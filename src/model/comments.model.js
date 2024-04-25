@@ -30,3 +30,5 @@ const comments = sequelize.define('comments', {
     tableName: 'comments',
     timestamps: true
 })
+
+module.exports = comments;
