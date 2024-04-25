@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require("path");
 const app = express();
+const sequelize = require('./config/database');
 
 const userRouter = require('./api/routes/users.router');
 const mainRouter = require('./api/routes/main.router');
@@ -37,14 +38,29 @@ app.use('/posts/:id/like', likesRouter);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Sequelize 연결 확인
+sequelize.authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+    
+    // Express 애플리케이션 시작
+    const port = process.env.PORT;
+    app.listen(port, () => {
+        console.log(`Listening on ${port}`);
+    });
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
 
+sequelize.sync({ force: true }) // force 옵션은 기존 테이블을 삭제하고 새로 생성합니다. 실제 운영 환경에서는 사용하지 않는 것이 좋습니다.
+  .then(() => {
+    console.log('Database synchronized successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to synchronize database:', err);
+  });
 
 // view engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
-const port = process.env.PORT;
-
-app.listen(port, () => {
-    console.log(`Listening on ${port}`);
-})
