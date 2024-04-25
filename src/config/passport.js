@@ -6,6 +6,7 @@ const GoogleStrategy = require('passport-google-oauth20');
 const KakaoStrategy = require('passport-kakao').Strategy;
 const {comparePass} = require('../config/user.config');
 const e = require("express");
+const {User} = require('../model/users.model');
 require('dotenv').config();
 
 // req.login(user)
@@ -16,7 +17,8 @@ passport.serializeUser((user, done) => {
 
 // client => session => request
 passport.deserializeUser(async (id, done) => {
-    const user = await db.promise().query(userRepository.findById, [id]);
+    const user = await User.findOne({ where: {id: id}});
+
 
     if (!user) return done(null, 'not user');
 
@@ -24,7 +26,7 @@ passport.deserializeUser(async (id, done) => {
 })
 
 
-const localStrategyConfig = new LocalStrategy({ usernameField: 'email', passwordField: 'password'},
+const localStrategyConfig = new LocalStrategy({ emailField: 'email', passwordField: 'password'},
     async (email, password, done) => {
         const user = await db.promise().query(userRepository.findOne, [email], (err, result) => {
             if (err) throw err;
@@ -48,16 +50,22 @@ const googleStrategyConfig = new GoogleStrategy({
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         const googleId = profile.id;
-        const user = await db.promise().query(userRepository.findByGoogleId, [googleId]);
-        const userInfo = user[0][0];
+        const userInfo = await User.findOne({ where: { googleId: googleId }});
 
         if (userInfo) return done(null, userInfo);
 
-        const email = profile.emails[0].value;
         try {
 
-            await db.promise().query(userRepository.googleSignup, [googleId, email]);
-
+            const user = new User();
+            user.email = profile.emails[0].value;
+            user.username = profile.displayName;
+            user.firstName = profile.name.givenName;
+            user.lastName = profile.name.familyName;
+            user.googleId = profile.id;
+            user.save((err) => {
+                done(err, user);
+            });
+            
             done(null, userInfo);
         } catch (err) {
             console.log('google login INSERT error');

@@ -16,6 +16,7 @@ userRouter.get('/signup',isNotAuth, (req, res) => {
 
 userRouter.post('/signup',isNotAuth, UserService.signup);
 userRouter.post('/login',isNotAuth, UserService.login);
+
 userRouter.post('/logout', UserService.logout);
 
 userRouter.get('/google', passport.authenticate('google'));

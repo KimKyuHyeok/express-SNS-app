@@ -53,7 +53,7 @@ sequelize.authenticate()
     console.error('Unable to connect to the database:', err);
   });
 
-sequelize.sync({ force: true }) // force 옵션은 기존 테이블을 삭제하고 새로 생성합니다. 실제 운영 환경에서는 사용하지 않는 것이 좋습니다.
+sequelize.sync({ force: false }) // force 옵션은 기존 테이블을 삭제하고 새로 생성합니다. 실제 운영 환경에서는 사용하지 않는 것이 좋습니다.
   .then(() => {
     console.log('Database synchronized successfully.');
   })
