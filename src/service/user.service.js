@@ -42,14 +42,12 @@ const UserService = {
     },
 
     login: (req, res, next) => {
-        passport.authenticate("local", (err, user, info) => {
+        passport.authenticate('local', (err, user, info) => {
             if (err) return next(err);
-            if (user.email || !user.password) return res.json({ message: '이메일 또는 비밀번호를 입력해주세요.'});
-            if (!user) return res.json({ msg: info });
+            console.log("test" , user.email);
+            if (!user.email || !user.password) return res.json({ message: '이메일 또는 비밀번호를 입력해주세요.'});
 
-            const userData = user[0][0];
-
-            req.logIn(userData, function (err) {
+            req.logIn(user, function (err) {
                 if (err) return next(err);
                 res.redirect('/');
             })

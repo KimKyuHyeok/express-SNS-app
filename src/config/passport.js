@@ -5,7 +5,6 @@ const db = require('../../db');
 const GoogleStrategy = require('passport-google-oauth20');
 const KakaoStrategy = require('passport-kakao').Strategy;
 const {comparePass} = require('../config/user.config');
-const e = require("express");
 const {User} = require('../model/users.model');
 require('dotenv').config();
 
@@ -26,15 +25,13 @@ passport.deserializeUser(async (id, done) => {
 })
 
 
-const localStrategyConfig = new LocalStrategy({ emailField: 'email', passwordField: 'password'},
+const localStrategyConfig = new LocalStrategy({ usernameField: 'email', passwordField: 'password'},
     async (email, password, done) => {
-        const user = await db.promise().query(userRepository.findOne, [email], (err, result) => {
-            if (err) throw err;
-        });
+        const user = await User.findOne({ where: { email: email }});
 
         if (!user) return done(null, false, {msg: '존재하지 않는 이메일 입니다.'});
 
-        const userPassword = user[0][0].password;
+        const userPassword = user.password;
 
         if (!comparePass(password, userPassword)) return done(null, false, {msg: '비밀번호가 일치하지 않습니다.'});
 

@@ -13,9 +13,8 @@ userRouter.get('/signup',isNotAuth, (req, res) => {
     res.render('auth/signup');
 })
 
-
 userRouter.post('/signup',isNotAuth, UserService.signup);
-userRouter.post('/login',isNotAuth, UserService.login);
+userRouter.post('/login', isNotAuth, UserService.login);
 
 userRouter.post('/logout', UserService.logout);
 
