@@ -1,11 +1,10 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const userRepository = require('../service/user.repository');
-const db = require('../../db');
 const GoogleStrategy = require('passport-google-oauth20');
 const KakaoStrategy = require('passport-kakao').Strategy;
 const {comparePass} = require('../config/user.config');
-const e = require("express");
+const {User} = require('../model/users.model');
 require('dotenv').config();
 
 // req.login(user)
@@ -16,7 +15,8 @@ passport.serializeUser((user, done) => {
 
 // client => session => request
 passport.deserializeUser(async (id, done) => {
-    const user = await db.promise().query(userRepository.findById, [id]);
+    const user = await User.findOne({ where: {id: id}});
+
 
     if (!user) return done(null, 'not user');
 
@@ -26,13 +26,11 @@ passport.deserializeUser(async (id, done) => {
 
 const localStrategyConfig = new LocalStrategy({ usernameField: 'email', passwordField: 'password'},
     async (email, password, done) => {
-        const user = await db.promise().query(userRepository.findOne, [email], (err, result) => {
-            if (err) throw err;
-        });
+        const user = await User.findOne({ where: { email: email }});
 
         if (!user) return done(null, false, {msg: '존재하지 않는 이메일 입니다.'});
 
-        const userPassword = user[0][0].password;
+        const userPassword = user.password;
 
         if (!comparePass(password, userPassword)) return done(null, false, {msg: '비밀번호가 일치하지 않습니다.'});
 
@@ -48,17 +46,23 @@ const googleStrategyConfig = new GoogleStrategy({
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         const googleId = profile.id;
-        const user = await db.promise().query(userRepository.findByGoogleId, [googleId]);
-        const userInfo = user[0][0];
+        const userInfo = await User.findOne({ where: { googleId: googleId }});
 
         if (userInfo) return done(null, userInfo);
 
-        const email = profile.emails[0].value;
         try {
+            User.create({
+                email: profile.emails[0].value,
+                username: profile.displayName,
+                firstName: profile.name.givenName,
+                lastName: profile.name.familyName,
+                googleId: profile.id
+            }).then(() => {
+                done(null, userInfo);
+            }).catch((err) => {
+                done(err, userInfo);
+            })
 
-            await db.promise().query(userRepository.googleSignup, [googleId, email]);
-
-            done(null, userInfo);
         } catch (err) {
             console.log('google login INSERT error');
             return done(err);
@@ -72,31 +76,31 @@ const googleStrategyConfig = new GoogleStrategy({
 const kakaoStrategyConfig = new KakaoStrategy({
     clientID: process.env.KAKAO_CLIENTID,
     callbackURL: '/auth/kakao/callback',
-}, async (accessToken, refreshToken, profileInfo, done) => {
+}, async (accessToken, refreshToken, profile, done) => {
     try {
         const kakaoId = profileInfo.id;
-        const user = await db.promise().query(userRepository.findByKakaoId, [kakaoId]);
-        const userInfo = user[0][0];
+
+        const userInfo = await User.findOne({ where: { kakaoId: kakaoId }});
 
         // 프로필 이미지
         const profileImageUrl = profileInfo._json.kakao_account.profile.profile_image_url;
-
-
 
         if (userInfo) return done(null, userInfo);
 
         // email 정보를 가져오려면 승인이 필요해서 임시로 넣어놨음
         const email = 'test';
 
-    try {
-
-            await db.promise().query(userRepository.kakaoSignup, [kakaoId, email]);
-
+        User.create({
+            email: profile.emails[0].value,
+            username: profile.displayName,
+            firstName: profile.name.givenName,
+            lastName: profile.name.familyName,
+            googleId: profile.id
+        }).then(() => {
             done(null, userInfo);
-        } catch (err) {
-            console.log('kakao login INSERT error');
-            return done(err);
-        }
+        }).catch((err) => {
+            done(err, userInfo);
+        })
     } catch (err) {
         console.error('kakao login error');
         return done(err);

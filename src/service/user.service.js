@@ -1,25 +1,36 @@
 const userRepository = require('./user.repository');
-const db = require('../../db');
 const {signup, login} = require("./user.repository");
 const {encodePass} = require('../config/user.config');
 const passport = require('passport');
 const sendMail = require('../mail/mail');
+const {User} = require('../model/users.model');
 
 
 const UserService = {
     signup: async (req, res) => {
-        const {email, password} = req.body;
+        const {email, password, username} = req.body;
+
+        const findUser = await User.findOne({ where: {email: email}});
+        if (findUser) return res.status(400).json({message: '존재하는 이메일 입니다. 다른 이메일을 사용해주세요.'});
 
         try {
             const encodePassword = encodePass(password);
 
-            await db.promise().query(signup, [email, encodePassword], (err, result) => {
-                if (err) throw err;
-
+            User.create({
+                email: email,
+                password: password,
+                username: username
+            })
+            .then((userInfo) => {
                 return res.status(200).json({
                     success: true,
+                });
+            })
+            .catch((err) => {
+                return res.status(400).json({
+                    success: false,
                 })
-            });
+            })
 
             await sendMail('kyuhyeok@gmail.com', 'test', 'welcome');
 
@@ -34,15 +45,14 @@ const UserService = {
     },
 
     login: (req, res, next) => {
-        passport.authenticate("local", (err, user, info) => {
+        passport.authenticate('local', (err, user, info) => {
             if (err) return next(err);
-            if (!user) return res.json({ msg: info });
+            console.log("test" , user.email);
+            if (!user.email || !user.password) return res.json({ message: '이메일 또는 비밀번호를 입력해주세요.'});
 
-            const userData = user[0][0];
-
-            req.logIn(userData, function (err) {
+            req.logIn(user, function (err) {
                 if (err) return next(err);
-                res.redirect('/');
+                res.redirect('/posts');
             })
         })(req, res, next)
     },
