@@ -2,7 +2,6 @@ const express = require('express');
 const path = require("path");
 const app = express();
 const sequelize = require('./config/database');
-
 const userRouter = require('./api/routes/users.router');
 const mainRouter = require('./api/routes/main.router');
 const postsRouter = require('./api/routes/posts.router');
@@ -10,7 +9,6 @@ const profileRouter = require('./api/routes/profile.router');
 const commentsRouter = require('./api/routes/comments.router');
 const friendsRouter = require('./api/routes/friends.router');
 const likesRouter = require('./api/routes/likes.router');
-
 const passport = require('passport');
 const cookieSession = require('cookie-session');
 
