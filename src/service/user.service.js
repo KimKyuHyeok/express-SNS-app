@@ -1,5 +1,4 @@
 const userRepository = require('./user.repository');
-const db = require('../../db');
 const {signup, login} = require("./user.repository");
 const {encodePass} = require('../config/user.config');
 const passport = require('passport');
