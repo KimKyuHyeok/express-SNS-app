@@ -1,8 +1,9 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const {post, like} = require('./posts.model');
+const comments = require('./comments.model');
 
 
-// 모델 정의
 const User = sequelize.define('User', {
     id: {
         type: DataTypes.INTEGER,
@@ -73,11 +74,19 @@ const friends = sequelize.define('friends', {
     },
     userId: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        references: {
+            model: User,
+            key: 'id'
+        }
     },
     friendId: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        references: {
+            model: User,
+            key: 'id'
+        }
     },
     createdAt: {
         type: DataTypes.DATE,
@@ -89,6 +98,11 @@ const friends = sequelize.define('friends', {
     timestamps: true
 })
 
+User.hasMany(friends, { foreignKey: 'userId' });
+User.hasMany(friends, { foreignKey: 'friendId' });
+User.hasMany(like, { foreignKey: 'userId' });
+User.hasMany(comments, { foreignKey: 'userId' });
+post.belongsTo(User, {foreignKey: 'author'});
 
 module.exports = {
     User,

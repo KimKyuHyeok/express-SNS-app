@@ -1,5 +1,7 @@
 const { DataTypes, INTEGER } = require('sequelize');
 const sequelize = require('../config/database');
+const post = require('./posts.model');
+const User = require('./users.model');
 
 const comments = sequelize.define('comments', {
     id: {
@@ -10,17 +12,26 @@ const comments = sequelize.define('comments', {
 
     userId: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        references: {
+            model: User,
+            key: 'id'
+        }
     },
 
     postId: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        references: {
+            model: post,
+            key: 'id'
+        }
     },
 
     createdAt: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
+        defaultValue: DataTypes.NOW
     },
 
     updateAt: {
@@ -30,5 +41,6 @@ const comments = sequelize.define('comments', {
     tableName: 'comments',
     timestamps: true
 })
+
 
 module.exports = comments;
