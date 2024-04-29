@@ -33,18 +33,6 @@ const UserService = {
                 })
             })
 
-            const user = new User();
-            user.email = email;
-            user.password = encodePassword;
-            user.username = username;
-            user.save((err) => {
-                if (err) res.status(400, err);
-
-                return res.status(200).json({
-                    success: true,
-                })
-            });
-
             await sendMail('kyuhyeok@gmail.com', 'test', 'welcome');
 
 
