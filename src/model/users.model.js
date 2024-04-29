@@ -54,7 +54,8 @@ const User = sequelize.define('User', {
     },
     createdAt: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
+        defaultValue: DataTypes.NOW
     },
     updateAt: {
         type: DataTypes.DATE
@@ -80,7 +81,8 @@ const friends = sequelize.define('friends', {
     },
     createdAt: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
+        defaultValue: DataTypes.NOW
     }
 }, {
     tableName: 'friends',
