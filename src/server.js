@@ -10,6 +10,7 @@ const commentsRouter = require('./api/routes/comments.router');
 const friendsRouter = require('./api/routes/friends.router');
 const likesRouter = require('./api/routes/likes.router');
 const passport = require('passport');
+const flash = require('connect-flash');
 const cookieSession = require('cookie-session');
 
 require('./config/passport');
@@ -25,6 +26,14 @@ app.use(passport.session());
 
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
+app.use(flash());
+
+app.use((req, res, next) => {
+  res.locals.error = req.flash('error');
+  res.locals.success = req.flash('success');
+  console.log(res.locals);
+  next();
+})
 
 app.use('/', mainRouter);
 app.use('/auth', userRouter);
@@ -35,6 +44,7 @@ app.use('/friends', friendsRouter);
 app.use('/posts/:id/like', likesRouter);
 
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 // Sequelize 연결 확인
 sequelize.authenticate()
