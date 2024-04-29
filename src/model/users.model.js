@@ -62,7 +62,7 @@ const User = sequelize.define('User', {
     }
 }, {
     tableName: 'users',
-    timestamps: true
+    timestamps: false
 });
 
 const friends = sequelize.define('friends', {
