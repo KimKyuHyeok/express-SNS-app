@@ -1,4 +1,4 @@
-const {post} = require('../../model/posts.model');
+const post = require('../../model/posts.model');
 
 function isAuth(req, res, next) {
     if (req.isAuthenticated()) {
@@ -16,28 +16,29 @@ function isNotAuth(req, res, next) {
 
 function checkPostOwnerShip (req, res, next) {
     if (req.isAuthenticated()) {
-        post.findByPk(req.params.id, (err, post) => {
-            if (err || !post) {
-                req.flash('error', '포스트가 없거나 에러가 발생했습니다.')
-                res.redirect('back');
-            } else {
-                if (post.author === req.user.id) {
-                    next();
+        post.findOne({ where : { id: req.params.id }})
+            .then((post) => {
+                if (!post) {
+                    req.flash('error', '포스트가 없거나 에러가 발생했습니다.')
+                    res.redirect('back');
                 } else {
-                    req.flash('error', '권한이 없습니다.');
-                    res.redirect                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                }
-            }
-        })
-
-
-    } else {
-        req.flash('error', '로그인을 해주세요.');
-        res.redirect('/auth/login');
-    }
+                    if (post.author === req.user.id) {
+                        req.post = post;
+                        next();
+                    } else {
+                        req.flash('error', '권한이 없습니다.');
+                        res.redirect('back');                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+                    }   
+                }   
+           }).catch(() => {
+                req.flash('error', '로그인을 해주세요.');
+                res.redirect('/auth/login');
+           })
+        }
 }
 
 module.exports = {
+    checkPostOwnerShip,
     isAuth,
     isNotAuth
 }

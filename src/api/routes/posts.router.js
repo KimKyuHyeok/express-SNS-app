@@ -1,11 +1,12 @@
 const express = require('express');
-const {isAuth} = require("../middleware/auth");
+const {isAuth, checkPostOwnerShip} = require("../middleware/auth");
 const router = express.Router();
-const {post} = require('../../model/posts.model');
+const post = require('../../model/posts.model');
 const comments = require('../../model/comments.model');
 const multer = require('multer');
 const path = require('path');
-const { friends, User } = require('../../model/users.model');
+const User = require('../../model/users.model');
+const friends = require('../../model/friends.model');
 const flash = require('connect-flash');
 
 const storageEngine = multer.diskStorage({
@@ -21,6 +22,7 @@ const upload = multer({storage: storageEngine}).single('image');
 
 
 router.use(flash());
+
 
 router.get('/', isAuth, (req, res) => {
     let friendList;
@@ -65,7 +67,13 @@ router.post('/', isAuth, upload, (req, res) => {
         req.flash('success', 'Post 생성에 실패하였습니다.')
         res.redirect('back');
     });
+})
 
+router.get('/:id/edit', checkPostOwnerShip, (req, res) => {
+
+    res.render('posts/edit', {
+        post: req.post
+    })
 })
 
 module.exports = router
