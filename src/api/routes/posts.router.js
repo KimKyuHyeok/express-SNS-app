@@ -1,11 +1,13 @@
 const express = require('express');
-const {isAuth} = require("../middleware/auth");
+const {isAuth, checkPostOwnerShip} = require("../middleware/auth");
 const router = express.Router();
-const {post} = require('../../model/posts.model');
+const post = require('../../model/posts.model');
 const comments = require('../../model/comments.model');
 const multer = require('multer');
 const path = require('path');
-const { friends, User } = require('../../model/users.model');
+const User = require('../../model/users.model');
+const friends = require('../../model/friends.model');
+const flash = require('connect-flash');
 
 const storageEngine = multer.diskStorage({
     destination: (req, file, callback) => {
@@ -17,6 +19,10 @@ const storageEngine = multer.diskStorage({
 });
 
 const upload = multer({storage: storageEngine}).single('image');
+
+
+router.use(flash());
+
 
 router.get('/', isAuth, (req, res) => {
     let friendList;
@@ -33,7 +39,7 @@ router.get('/', isAuth, (req, res) => {
             res.render('posts', {
                 posts: postList,
                 currentUser: req.user,
-                currentFriends: friendList
+                currentFriends: friendList,
             });
         })
         .catch(err => {
@@ -54,17 +60,38 @@ router.post('/', isAuth, upload, (req, res) => {
         author: req.user.id
     })
     .then(() => {
-        return res.status(200).json({
-            success: true,
-        });
+        req.flash('error', 'Post 작성 완료')
+        res.redirect('back');
     })
     .catch((err) => {
-        return res.status(400).json({
-            success: false,
-            error: "Post save error :", err
-        });
+        req.flash('success', 'Post 생성에 실패하였습니다.')
+        res.redirect('back');
     });
+})
 
+router.get('/:id/edit', checkPostOwnerShip, (req, res) => {
+
+    res.render('posts/edit', {
+        post: req.post
+    })
+})
+                   
+router.put('/:id', checkPostOwnerShip, (req, res) => {
+    post.findOne({ where : { id: req.params.id }})
+        .then((post) => {
+            post.description = req.body.description;
+
+            return post.save();
+        })
+        .then((result) => {
+            if (result) {
+                req.flash('success', 'Post 수정 완료');
+                res.redirect('/posts');
+            }
+        }).catch((err) => {
+            console.log('Post 수정 에러', err);
+            res.redirect('/posts');
+        })
 })
 
 module.exports = router

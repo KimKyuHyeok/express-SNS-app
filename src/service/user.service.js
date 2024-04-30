@@ -3,7 +3,7 @@ const {signup, login} = require("./user.repository");
 const {encodePass} = require('../config/user.config');
 const passport = require('passport');
 const sendMail = require('../mail/mail');
-const {User} = require('../model/users.model');
+const User = require('../model/users.model');
 
 
 const UserService = {
