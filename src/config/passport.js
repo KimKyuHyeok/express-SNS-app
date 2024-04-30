@@ -4,7 +4,7 @@ const userRepository = require('../service/user.repository');
 const GoogleStrategy = require('passport-google-oauth20');
 const KakaoStrategy = require('passport-kakao').Strategy;
 const {comparePass} = require('../config/user.config');
-const {User} = require('../model/users.model');
+const User = require('../model/users.model');
 require('dotenv').config();
 
 // req.login(user)
