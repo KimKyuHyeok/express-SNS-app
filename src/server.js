@@ -12,6 +12,7 @@ const likesRouter = require('./api/routes/likes.router');
 const passport = require('passport');
 const flash = require('connect-flash');
 const cookieSession = require('cookie-session');
+const methodOverride = require('method-override');
 
 require('./config/passport');
 require('dotenv').config();
@@ -27,6 +28,7 @@ app.use(passport.session());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(flash());
+app.use(methodOverride('_method'));
 
 app.use((req, res, next) => {
   res.locals.error = req.flash('error');
