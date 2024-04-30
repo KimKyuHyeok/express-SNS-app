@@ -75,5 +75,23 @@ router.get('/:id/edit', checkPostOwnerShip, (req, res) => {
         post: req.post
     })
 })
+                   
+router.put('/:id', checkPostOwnerShip, (req, res) => {
+    post.findOne({ where : { id: req.params.id }})
+        .then((post) => {
+            post.description = req.body.description;
+
+            return post.save();
+        })
+        .then((result) => {
+            if (result) {
+                req.flash('success', 'Post 수정 완료');
+                res.redirect('/posts');
+            }
+        }).catch((err) => {
+            console.log('Post 수정 에러', err);
+            res.redirect('/posts');
+        })
+})
 
 module.exports = router
