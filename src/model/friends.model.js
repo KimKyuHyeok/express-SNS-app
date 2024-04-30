@@ -1,36 +1,28 @@
-const { DataTypes, INTEGER } = require('sequelize');
 const sequelize = require('../config/database');
+const { DataTypes } = require('sequelize')
 
-const comments = sequelize.define('comments', {
+const friends = sequelize.define('friends', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-
     userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
-
-    postId: {
+    friendId: {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
-
     createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW
-    },
-
-    updateAt: {
-        type: DataTypes.DATE
     }
 }, {
-    tableName: 'comments',
+    tableName: 'friends',
     timestamps: true
 })
 
-
-module.exports = comments;
+module.exports = friends;

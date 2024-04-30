@@ -1,7 +1,9 @@
-const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const {post, like} = require('./posts.model');
+const post = require('./posts.model');
+const like = require('./like.model');
+const friends = require('./friends.model');
 const comments = require('./comments.model');
+const { DataTypes } = require('sequelize')
 
 
 const User = sequelize.define('User', {
@@ -66,45 +68,13 @@ const User = sequelize.define('User', {
     timestamps: false
 });
 
-const friends = sequelize.define('friends', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    userId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: User,
-            key: 'id'
-        }
-    },
-    friendId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: User,
-            key: 'id'
-        }
-    },
-    createdAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW
-    }
-}, {
-    tableName: 'friends',
-    timestamps: true
-})
+
+
 
 User.hasMany(friends, { foreignKey: 'userId' });
 User.hasMany(friends, { foreignKey: 'friendId' });
 User.hasMany(like, { foreignKey: 'userId' });
 User.hasMany(comments, { foreignKey: 'userId' });
-post.belongsTo(User, {foreignKey: 'author'});
 
-module.exports = {
-    User,
-    friends
-}
+
+module.exports = User

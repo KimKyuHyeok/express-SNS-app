@@ -19,6 +19,7 @@ const storageEngine = multer.diskStorage({
 
 const upload = multer({storage: storageEngine}).single('image');
 
+
 router.use(flash());
 
 router.get('/', isAuth, (req, res) => {

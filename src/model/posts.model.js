@@ -1,7 +1,7 @@
 const { DataTypes, INTEGER } = require('sequelize');
 const sequelize = require('../config/database');
 const comments = require('./comments.model');
-const { User } = require('./users.model');
+const User = require('./users.model');
 
 const post = sequelize.define('post', {
     id: {
@@ -36,40 +36,7 @@ const post = sequelize.define('post', {
     timestamps: false
 });
 
-const like = sequelize.define('like', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-
-    postId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: post,
-            key: 'id'
-        }
-    },
-
-    userId: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-
-    createdAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW
-    }
-}, {
-    tableName: 'likes',
-    timestamps: true
-})
-
-
 post.hasMany(comments, { foreignKey: 'postId' });
+post.belongsTo(User, {foreignKey: 'author'});
 
-
-
-module.exports = {post, like};
+module.exports = post;
