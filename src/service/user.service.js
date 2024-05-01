@@ -11,33 +11,31 @@ const UserService = {
         const {email, password, username} = req.body;
 
         const findUser = await User.findOne({ where: {email: email}});
-        if (findUser) return res.status(400).json({message: '존재하는 이메일 입니다. 다른 이메일을 사용해주세요.'});
+        if (findUser) {
+            req.flash('error', '존재하는 이메일 입니다. 다른 이메일을 사용해주세요.');
+            return res.redirect('/auth/signup');
+        }
 
         try {
             const encodePassword = encodePass(password);
 
             User.create({
                 email: email,
-                password: password,
+                password: encodePassword,
                 username: username
             })
             .then((userInfo) => {
-                return res.status(200).json({
-                    success: true,
-                });
+                req.flash('success', '회원가입이 완료되었습니다.');
+                return res.redirect('/auth/login');
             })
             .catch((err) => {
-                return res.status(400).json({
-                    success: false,
-                })
+                console.err('Signup Error : ', err);
+                req.flash('error', '회원가입 도중 에러가 발생하였습니다.');
+                return res.redirect('/auth/signup');
             })
 
-            await sendMail('kyuhyeok@gmail.com', 'test', 'welcome');
+            // await sendMail('kyuhyeok@gmail.com', 'test', 'welcome');
 
-
-            return res.status(200).json({
-                success: true,
-            })
         } catch (e) {
             console.log(e);
         }
@@ -48,7 +46,10 @@ const UserService = {
         passport.authenticate('local', (err, user, info) => {
             if (err) return next(err);
             console.log("test" , user.email);
-            if (!user.email || !user.password) return res.json({ message: '이메일 또는 비밀번호를 입력해주세요.'});
+            if (!user.email || !user.password) {
+                req.flash('error', '이메일 또는 비밀번호를 입력해주세요.');
+                res.redirect('/auth/login');
+            }
 
             req.logIn(user, function (err) {
                 if (err) return next(err);
