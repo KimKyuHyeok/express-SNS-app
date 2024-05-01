@@ -40,7 +40,7 @@ app.use((req, res, next) => {
 app.use('/', mainRouter);
 app.use('/auth', userRouter);
 app.use('/posts', postsRouter);
-app.use('/posts/:id/comments', commentsRouter);
+app.use('/posts/', commentsRouter);
 app.use('/profile/:id', profileRouter);
 app.use('/friends', friendsRouter);
 app.use('/posts/:id/like', likesRouter);
