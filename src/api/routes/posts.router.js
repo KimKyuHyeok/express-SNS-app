@@ -26,26 +26,36 @@ router.use(flash());
 
 router.get('/', isAuth, (req, res) => {
     let friendList;
-
-    friends.findAll({ where: { userId: req.user.id } })
-        .then(result => {
-            friendList = result;
-            return post.findAll({
-                include: [{ model: comments }, {model: User, attributes: ['username']}],
-                order: [['createdAt', 'DESC']],
-            });
-        })
-        .then(postList => {
-            res.render('posts', {
-                posts: postList,
-                currentUser: req.user,
-                currentFriends: friendList,
-            });
-        })
-        .catch(err => {
-            console.error("Error fetching data:", err);
-            res.status(500).send('Server Error');
+    console.log("TEST");
+    post.findAll({
+        include: [
+            { 
+                model: comments, 
+                include: [{ 
+                    model: User, 
+                    attributes: ['username']
+                }] 
+            }, 
+            {
+                model: User, 
+                attributes: ['username']
+            }
+        ],
+        order: [['createdAt', 'DESC']],
+    })
+    .then(postList => {
+        console.log("POST TEST >> " , postList)
+        res.render('posts', {
+            posts: postList,
+            currentUser: req.user,
+            currentFriends: friendList,
         });
+    })
+    .catch(err => {
+        console.error("Error fetching data:", err);
+        res.status(500).send('Server Error');
+    });
+    
 });
 
 
