@@ -94,4 +94,18 @@ router.put('/:id', checkPostOwnerShip, (req, res) => {
         })
 })
 
+router.delete('/:id', checkPostOwnerShip, (req, res) => {
+    console.log("DELETE START @@@@@@@@@@@@@@@@@@@@@@@");
+    post.destroy({ where : { id: req.params.id }})
+        .then(() => {
+            req.flash('success', '게시물이 정상적으로 삭제되었습니다.');
+            res.redirect('back');
+        })
+        .catch((err) => {
+            console.err('post delete err : ', err);
+            req.flash('false', '게시물 삭제 도중 에러가 발생하였습니다.');
+            res.redirect('back');
+        });
+})
+
 module.exports = router

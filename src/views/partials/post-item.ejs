@@ -17,7 +17,8 @@
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item text-center" href="/posts/<%= post.id %>/edit">Edit</a></li>
                         <li>
-                            <form class="dropdown-item text-center" href="/posts/<%= post.id %>?_method=DELETE" method="POST">
+                            <form class="dropdown-item text-center" href="/posts/<%= post.id %>/?_method=DELETE" method="POST">
+                                <input type="hidden" name="_method" value="DELETE">
                                 <button type="submit" class="no-outline">Delete</button>
                             </form>
                         </li>
