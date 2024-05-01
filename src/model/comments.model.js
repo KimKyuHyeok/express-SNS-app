@@ -1,6 +1,7 @@
 const { DataTypes, INTEGER } = require('sequelize');
 const sequelize = require('../config/database');
 const User = require('./users.model');
+const post = require('./posts.model');
 
 const comments = sequelize.define('comments', {
     id: {
@@ -38,6 +39,7 @@ const comments = sequelize.define('comments', {
     timestamps: true
 })
 
+post.hasMany(comments, {foreignKey: 'postId'}); 
 comments.belongsTo(User, {foreignKey: 'userId'});
 
 
