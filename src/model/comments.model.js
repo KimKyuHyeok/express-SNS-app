@@ -1,11 +1,18 @@
 const { DataTypes, INTEGER } = require('sequelize');
 const sequelize = require('../config/database');
+const User = require('./users.model');
+const post = require('./posts.model');
 
 const comments = sequelize.define('comments', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
+    },
+
+    description: {
+        type: DataTypes.STRING,
+        allowNull: false
     },
 
     userId: {
@@ -24,13 +31,16 @@ const comments = sequelize.define('comments', {
         defaultValue: DataTypes.NOW
     },
 
-    updateAt: {
+    updatedAt: {
         type: DataTypes.DATE
     }
 }, {
     tableName: 'comments',
     timestamps: true
 })
+
+post.hasMany(comments, {foreignKey: 'postId'}); 
+comments.belongsTo(User, {foreignKey: 'userId'});
 
 
 module.exports = comments;

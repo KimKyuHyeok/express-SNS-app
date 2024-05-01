@@ -8,8 +8,8 @@
 
     <% posts.forEach((post) => { %>
         
-        <% if (post.author.id === currentUser.id || 
-        currentFriends.userId === post.author.id) 
+        <% if (post.author === currentUser.id || 
+        currentFriends.userId === post.author) 
         { %>
             <div style="max-width: 600px; margin: 1rem auto;">
                 <%- include('../partials/post-item', { post: post }) %>

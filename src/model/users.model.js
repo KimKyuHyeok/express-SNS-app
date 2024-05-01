@@ -1,8 +1,6 @@
 const sequelize = require('../config/database');
-const post = require('./posts.model');
 const like = require('./like.model');
 const friends = require('./friends.model');
-const comments = require('./comments.model');
 const { DataTypes } = require('sequelize')
 
 
@@ -74,7 +72,6 @@ const User = sequelize.define('User', {
 User.hasMany(friends, { foreignKey: 'userId' });
 User.hasMany(friends, { foreignKey: 'friendId' });
 User.hasMany(like, { foreignKey: 'userId' });
-User.hasMany(comments, { foreignKey: 'userId' });
 
 
 module.exports = User

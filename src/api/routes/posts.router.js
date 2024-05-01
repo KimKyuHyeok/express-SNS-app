@@ -26,26 +26,36 @@ router.use(flash());
 
 router.get('/', isAuth, (req, res) => {
     let friendList;
-
-    friends.findAll({ where: { userId: req.user.id } })
-        .then(result => {
-            friendList = result;
-            return post.findAll({
-                include: [{ model: comments }, {model: User, attributes: ['username']}],
-                order: [['createdAt', 'DESC']],
-            });
-        })
-        .then(postList => {
-            res.render('posts', {
-                posts: postList,
-                currentUser: req.user,
-                currentFriends: friendList,
-            });
-        })
-        .catch(err => {
-            console.error("Error fetching data:", err);
-            res.status(500).send('Server Error');
+    console.log("TEST");
+    post.findAll({
+        include: [
+            { 
+                model: comments, 
+                include: [{ 
+                    model: User, 
+                    attributes: ['username']
+                }] 
+            }, 
+            {
+                model: User, 
+                attributes: ['username']
+            }
+        ],
+        order: [['createdAt', 'DESC']],
+    })
+    .then(postList => {
+        console.log("POST TEST >> " , postList)
+        res.render('posts', {
+            posts: postList,
+            currentUser: req.user,
+            currentFriends: friendList,
         });
+    })
+    .catch(err => {
+        console.error("Error fetching data:", err);
+        res.status(500).send('Server Error');
+    });
+    
 });
 
 
@@ -92,6 +102,20 @@ router.put('/:id', checkPostOwnerShip, (req, res) => {
             console.log('Post 수정 에러', err);
             res.redirect('/posts');
         })
+})
+
+router.delete('/:id', checkPostOwnerShip, (req, res) => {
+    console.log("DELETE START @@@@@@@@@@@@@@@@@@@@@@@");
+    post.destroy({ where : { id: req.params.id }})
+        .then(() => {
+            req.flash('success', '게시물이 정상적으로 삭제되었습니다.');
+            res.redirect('back');
+        })
+        .catch((err) => {
+            console.err('post delete err : ', err);
+            req.flash('false', '게시물 삭제 도중 에러가 발생하였습니다.');
+            res.redirect('back');
+        });
 })
 
 module.exports = router
