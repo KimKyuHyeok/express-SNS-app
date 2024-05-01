@@ -74,7 +74,6 @@ const User = sequelize.define('User', {
 User.hasMany(friends, { foreignKey: 'userId' });
 User.hasMany(friends, { foreignKey: 'friendId' });
 User.hasMany(like, { foreignKey: 'userId' });
-User.hasMany(comments, { foreignKey: 'userId' });
 
 
 module.exports = User
