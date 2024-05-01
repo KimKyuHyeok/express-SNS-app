@@ -1,8 +1,6 @@
 const sequelize = require('../config/database');
-const post = require('./posts.model');
 const like = require('./like.model');
 const friends = require('./friends.model');
-const comments = require('./comments.model');
 const { DataTypes } = require('sequelize')
 
 

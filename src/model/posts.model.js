@@ -36,7 +36,7 @@ const post = sequelize.define('post', {
     timestamps: false
 });
 
-post.hasMany(comments, { foreignKey: 'postId' });
+
 post.belongsTo(User, {foreignKey: 'author'});
 
 module.exports = post;
