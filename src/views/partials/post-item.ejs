@@ -61,7 +61,8 @@
                                     <div class="dropdown-menu">
                                         <a class="dropdown-item text-center"
                                         href="/posts/<%= post.id %>/comments/<%= comment.id %>">Edit</a>
-                                        <form class="dropdown-item text-center" href="/posts/<%= post.id %>/comments/<%= comment.id %>/?_method=DELETE" method="POST">
+                                        <form class="dropdown-item text-center" action="/posts/<%= post.id %>/comments/<%= comment.id %>/?_method=DELETE" method="POST">
+                                            <input type="hidden" name="_method" value="DELETE">
                                             <button class="no-outline" type="submit">Delete</button>
                                         </form>
                                     </div>
