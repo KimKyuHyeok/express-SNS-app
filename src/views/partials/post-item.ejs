@@ -35,5 +35,53 @@
         <% if (post.image) { %>
             <img class="w-100" src="/assets/images/<%= post.image %>">
         <% } %>
+
+        <hr class="mt-1">
+        <div class="collapse show" id="post <%= post.id %>">
+            <% if (post.comments.length > 0) { %>
+                <div class="card-body comment-section">
+                    <% post.comments.forEach((comment) => { %>
+                        <div class="d-flex justify-content-between">
+                            <div class="font-weight-bold">
+                                <%= comment.User.username %>
+                            </div>
+                            <small>
+                                <%= comment.createdAt.toDateString() %>
+                            </small>
+                        </div>
+                        <div>
+                            <p>
+                                <%= comment.description %>
+                            </p>
+                            <% if (comment.userId === currentUser.id) { %>
+                                <div class="dropdown">
+                                    <button class="no-outline" type="button" data-bs-toggle="dropdown">
+                                        <img src="/assets/images/drowdown.png" height="20px">
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item text-center"
+                                        href="/posts/<%= post.id %>/comments/<%= comment.id %>">Edit</a>
+                                        <form class="dropdown-item text-center" href="/posts/<%= post.id %>/comments/<%= comment.id %>/?_method=DELETE" method="POST">
+                                            <button class="no-outline" type="submit">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                             
+                            <% } %>
+
+                        </div>
+                    <% }) %>
+                </div>
+            <% } %>
+        </div>
+        <div>
+            <form method="POST" action="/posts/<%=post.id%>/comments">
+                <div class="form-group">
+                    <input name="description" id="desc" class="comment-section" placeholder="댓글을 작성해주세요." required>
+                    <p class="small ms-2"> 엔터를 눌러주세요.</p>
+                </div>
+
+            </form>
+        </div>
     </div>
 </div>
