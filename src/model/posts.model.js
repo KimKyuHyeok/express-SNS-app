@@ -1,7 +1,7 @@
 const { DataTypes, INTEGER } = require('sequelize');
 const sequelize = require('../config/database');
-const comments = require('./comments.model');
 const User = require('./users.model');
+const like = require('./like.model');
 
 const post = sequelize.define('post', {
     id: {
@@ -36,7 +36,10 @@ const post = sequelize.define('post', {
     timestamps: false
 });
 
-
 post.belongsTo(User, {foreignKey: 'author'});
+User.hasMany(post, { foreignKey: 'author' });
+
+post.hasMany(like, { foreignKey: 'postId' });
+
 
 module.exports = post;

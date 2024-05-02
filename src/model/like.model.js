@@ -28,4 +28,8 @@ const like = sequelize.define('like', {
     timestamps: true
 })
 
+
+
+
+
 module.exports = like;
