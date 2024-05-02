@@ -8,6 +8,7 @@ const path = require('path');
 const User = require('../../model/users.model');
 const friends = require('../../model/friends.model');
 const flash = require('connect-flash');
+const like = require('../../model/like.model');
 
 const storageEngine = multer.diskStorage({
     destination: (req, file, callback) => {
@@ -39,12 +40,15 @@ router.get('/', isAuth, (req, res) => {
             {
                 model: User, 
                 attributes: ['username']
+            },
+            {
+                model: like,
+                attributes: ['userId']
             }
         ],
         order: [['createdAt', 'DESC']],
     })
     .then(postList => {
-        console.log("POST TEST >> " , postList)
         res.render('posts', {
             posts: postList,
             currentUser: req.user,
