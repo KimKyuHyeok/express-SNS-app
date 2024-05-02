@@ -15,10 +15,17 @@ const friends = sequelize.define('friends', {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
+    status: {
+        type: DataTypes.ENUM('pending', 'accepted', 'rejected'),
+        defaultValue: 'pending'
+    },
     createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW
+    },
+    updatedAt: {
+        type: DataTypes.DATE
     }
 }, {
     tableName: 'friends',
