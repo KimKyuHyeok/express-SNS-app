@@ -41,8 +41,6 @@ router.get('/', isAuth, async (req, res) => {
             }]
         });
 
-        console.log('TEST >' , userInfo.friends);
-
         res.render('friends', {
             currentUser: req.user,
             userInfo: userInfo,
