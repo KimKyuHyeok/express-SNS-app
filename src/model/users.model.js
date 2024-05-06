@@ -75,6 +75,9 @@ friends.belongsTo(User, {foreignKey: 'userId' });
 User.hasMany(friends, { foreignKey: 'friendId' });
 friends.belongsTo(User, {foreignKey: 'friendId' });
 
+User.hasMany(friends, { foreignKey: 'friendId', as: 'friendsRequest' });
+friends.belongsTo(User, {foreignKey: 'friendId', as: 'friendsRequest' });
+
 User.hasMany(like, { foreignKey: 'userId' });
 like.belongsTo(User, { foreignKey: 'userId' });
 

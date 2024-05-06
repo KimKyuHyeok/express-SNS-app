@@ -1,0 +1,110 @@
+<%- include('../partials/header') %>
+<div class="container col-lg-8">
+    <div class="mb-2">
+        <div class="card">
+            <h5 class="card-header text-start">친구 요청</h5>
+            <div class="card-body">
+                <% if (userInfo === null) { %>
+                    <div class="card-text text-center text-muted">
+                        아직 친구 요청이 없습니다.
+                    </div>
+                <% } else { %>
+                    <% const request = [userInfo]; %>
+                    <% request.forEach((friend) => { %>
+                        <% if (!friend.friendId === currentUser.id) { %>
+                        <div class="card" style="border: none;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <a href="/profile/<%= friend.friendId %>">
+                                        <p><%= friend.User.username %></p>
+                                    </a>
+                                    <div class="d-flex">
+                                        <form action="/friends/<%= friend.id %>/accept-friend-request/?_method=PUT" method="POST" class="me-3">
+                                            <button class="btn btn-primary btn-small" type="submit">수락</button>
+                                        </form>
+                                        <form action="/friends/<%= friend.id %>/rejected-friend-request/?_method=PUT" method="POST" class="me-3">
+                                            <button class="btn btn-primary btn-small" type="submit">거절</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
+                    <% }) %>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-2">
+        <div class="card">
+            <h5 class="card-header text-start">알 수도 있는 사람들</h5>
+            <div class="card-body">
+                <% users.forEach((user) => { %>
+                    <% if (
+                        !(user.id === currentUser.id) &&
+                        !(user.friends.find(
+                            friend => (friend.friendId === currentUser.id) && (friend.userId === currentUser.id)
+                        ))
+                    ) { %>
+                        <div class="card" style="border: none;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <a href="/profile/<%= user.id %>">
+                                        <p><%= user.username %></p>
+                                    </a>
+                                    
+                                    <% if (user.friends.find(friend => friend.friendId === currentUser.id)) { %>
+                                        <form action="/friends/<%= user.id %>/remove-friend-request/<%= currentUser.id %>?_method=PUT" method="POST" class="ms-auto">
+                                            <button type="submit" class="btn btn-sm btn-primary">친구 요청 취소</button>
+                                        </form>
+                                    <% } else { %>
+                                        <form action="/friends/<%= user.id %>/add-friend-request?_method=PUT" method="POST" class="ms-auto">
+                                            <button type="submit" class="btn btn-sm btn-primary">친구 요청</button>
+                                        </form>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-2">
+        <div class="card">
+            <h5 class="card-header text-start">친구 목록</h5>
+            <div class="card-body">
+                
+                <% if (userInfo === null) { %>
+                    <div class="card-text text-center text-muted">
+                        아직 친구 요청이 없습니다.
+                    </div>
+                <% } else {%>
+                    <% const request = [userInfo] %>
+                    <% request.forEach((friend) => { %>
+                        <% if ((friend.status === 'accept') && (friend.userId || friend.friendId === currentUser.id)) { %>
+                         
+                        <div class="card" style="border: none;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <a href="/profile/<%= friend.friendId %>">
+                                        <p><%= friend.User.username %></p>
+                                    </a>
+                                    <form action="/friends/<%= friend.id %>/remove-friend?_method=PUT" method="POST" class="me-3">
+                                        <input type="hidden" name="_method" value="PUT">
+                                        <button class="btn btn-primary btn-small" type="submit">친구 취소</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
+                    <% }) %>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

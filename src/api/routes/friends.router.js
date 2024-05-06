@@ -4,34 +4,48 @@ const {isAuth} = require('../middleware/auth');
 const User = require('../../model/users.model');
 const friends = require('../../model/friends.model');
 const flash = require('connect-flash');
+const { Sequelize, Op } = require('sequelize');
 
 router.use(flash());
 
 router.get('/', isAuth, async (req, res) => {
     
     try {
-        const users = await User.findAll();
-
-        const friendsRequest = await friends.findAll(
-            { where : { 
-                status: 'pending',
-            },
+        const userInfo = await User.findOne({
+            where: { id: req.user.id },
             include: [{
-                model: User,
-                attributes: ['username']
-            }]})
+                model: friends,
+                where: {
+                    [Op.or]: [
+                        { friendId: req.user.id },
+                        { userId: req.user.id }
+                    ]
+                },
+                include: [{
+                    model: User, // User 모델을 추가로 include
+                    attributes: ['username'] // username 열을 가져옴
+                }],
+                attributes: ['id'] // friends 모델의 id 열만 가져옴
+            }]
+        })
 
-        const frineds = await friends.findAll(
-            { where : { status: 'accepted' },
+        const users = await User.findAll({
             include: [{
-                model: User,
-                attributes: ['username']
-            }]});
+                model: friends,
+                attributes: ['id'],
+                include: [{
+                    model: User, // User 모델을 추가로 include
+                    attributes: ['username'] // username 열을 가져옴
+                }],
+                required: false
+            }]
+        });
+
+        console.log('TEST >' , userInfo.friends);
 
         res.render('friends', {
             currentUser: req.user,
-            friends: frineds,
-            friendsRequest: friendsRequest,
+            userInfo: userInfo,
             users: users
             });
     } catch (err) {
