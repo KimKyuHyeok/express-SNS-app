@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const comments = require('../../model/comments.model');
 const post = require('../../model/posts.model');
-const {checkCommentOwnerShip} = require('../middleware/auth');
+const {checkCommentOwnerShip, isAuth } = require('../middleware/auth');
 
-router.post('/:id/comments',checkCommentOwnerShip, (req, res) => {
-
+router.post('/:id/comments',isAuth, (req, res) => {
+    
     comments.create({
         description: req.body.description,
         userId: req.user.id,
@@ -51,8 +51,6 @@ router.get("/:postId/comments/:id/edit", checkCommentOwnerShip, (req, res) => {
 })
 
 router.put('/:postId/comments/:id', checkCommentOwnerShip, (req, res) => {
-
-
 
     comments.findOne({ where: { postId: req.params.postId, id: req.params.id } })
     .then((comment) => {
