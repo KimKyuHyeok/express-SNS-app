@@ -1,5 +1,6 @@
 const comments = require('../../model/comments.model');
 const post = require('../../model/posts.model');
+const User = require('../../model/users.model');
 
 function isAuth(req, res, next) {
     if (req.isAuthenticated()) {
@@ -61,9 +62,32 @@ function checkCommentOwnerShip (req, res, next) {
         }
 }
 
+function checkIsMe(req, res, next) {
+    if (req.isAuthenticated()) {
+        User.findOne({ where : { id: req.params.id }})
+        .then((user) => {
+            if(!user) {
+                req.flash('error', '유저를 찾을 수 없거나 에러가 발생했습니다.');
+                res.redirect('/profile/' + req.params.id);
+            } else {
+                if(user.id === req.user.id) {
+                    next();
+                } else {
+                    req.flash('error', '권한이 없습니다.');
+                    res.redirect('/profile/' + req.params.id);
+                }
+            }
+        })
+    } else {
+        req.flash('error', '로그인을 먼저 해주세요.');
+        res.redirect('/auth/login');
+    }
+}
+
 module.exports = {
     checkCommentOwnerShip,
     checkPostOwnerShip,
     isAuth,
-    isNotAuth
+    isNotAuth,
+    checkIsMe
 }

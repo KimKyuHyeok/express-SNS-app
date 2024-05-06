@@ -45,7 +45,6 @@ const UserService = {
     login: (req, res, next) => {
         passport.authenticate('local', (err, user, info) => {
             if (err) return next(err);
-            console.log("test" , user.email);
             if (!user.email || !user.password) {
                 req.flash('error', '이메일 또는 비밀번호를 입력해주세요.');
                 res.redirect('/auth/login');
