@@ -33,7 +33,7 @@ app.use(methodOverride('_method'));
 app.use((req, res, next) => {
   res.locals.error = req.flash('error');
   res.locals.success = req.flash('success');
-  console.log(res.locals);
+  res.locals.currentUser = req.user;
   next();
 })
 
@@ -41,7 +41,7 @@ app.use('/', mainRouter);
 app.use('/auth', userRouter);
 app.use('/posts', postsRouter);
 app.use('/posts', commentsRouter);
-app.use('/profile/:id', profileRouter);
+app.use('/profile', profileRouter);
 app.use('/friends', friendsRouter);
 app.use('/post', likesRouter);
 
