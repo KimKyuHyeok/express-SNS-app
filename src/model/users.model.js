@@ -51,7 +51,8 @@ const User = sequelize.define('User', {
         defaultValue: '데이터 없음'
     },
     contact: {
-        type: DataTypes.INTEGER
+        type: DataTypes.STRING,
+        defaultValue: '데이터 없음'
     },
     createdAt: {
         type: DataTypes.DATE,
