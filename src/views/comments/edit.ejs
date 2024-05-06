@@ -1,0 +1,17 @@
+<%- include('../partials/header') %>
+<div class="container col-lg-8">
+    <div class="card">
+        <h5 class="card-header">
+            댓글 수정하기
+        </h5>
+        <div class="card-body">
+            <form action="/posts/<%= post.id %>/comments/<%= comments.id %>?_method=PUT" method="POST">
+                <div class="form-group">
+                    <textarea name="description" id="desc" class="form-control" style="border: none;"><%= comments.description %></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">업데이트</button>
+            </form>
+        </div>
+    </div>
+</div>
+<%- include('../partials/footer') %>
