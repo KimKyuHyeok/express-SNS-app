@@ -28,8 +28,6 @@ router.use(flash());
 router.get('/', isAuth, async (req, res) => {
     
     const friendList = await friends.findAll({ where : { userId : req.user.id }});
-
-    console.log("TEST");
     post.findAll({
         include: [
             { 
@@ -111,7 +109,6 @@ router.put('/:id', checkPostOwnerShip, (req, res) => {
 })
 
 router.delete('/:id', checkPostOwnerShip, (req, res) => {
-    console.log("DELETE START @@@@@@@@@@@@@@@@@@@@@@@");
     post.destroy({ where : { id: req.params.id }})
         .then(() => {
             req.flash('success', '게시물이 정상적으로 삭제되었습니다.');
